@@ -1,6 +1,5 @@
 import { PaginationInput } from "../schema/pagination.schema";
 import { PaginationService } from "./pagination.service";
-import { VideoInput, VideoModel } from "../schema/video.schema";
 import { Types } from "mongoose";
 import {
   VideoCommentInput,
@@ -8,18 +7,16 @@ import {
 } from "../schema/videoComment.schema";
 
 export class VideoCommentService {
-  async getVideoComments(paginatedInput: PaginationInput, video: string) {
+  async getVideoComments(paginatedInput: PaginationInput, videoId: string) {
     const paginationServices = new PaginationService({
       model: VideoCommentModel,
-      populate: "user,video",
-      filter: (vc) => {
-        vc.video === video;
-      },
+      populate: "user video",
+      filter: { video: videoId },
     });
     return paginationServices.getPaginatedItems(paginatedInput);
   }
   async getVideoComment(_id: string) {
-    return VideoCommentModel.findById(_id).populate("user,video").lean();
+    return VideoCommentModel.findById(_id).populate("user video").lean();
   }
   async createVideoComment(
     videoComment: VideoCommentInput,
@@ -30,14 +27,14 @@ export class VideoCommentService {
     const createdVideoComment = await VideoCommentModel.create(
       videoCommentWithUserAndVideo
     );
-    return createdVideoComment.populate("user,video");
+    return createdVideoComment.populate("user video");
   }
   async deleteVideoComment(_id: string) {
-    return VideoCommentModel.findByIdAndRemove(_id).populate("user,video");
+    return VideoCommentModel.findByIdAndRemove(_id).populate("user video");
   }
   async updateVideoComment(_id: string, videoComment: VideoCommentInput) {
     return VideoCommentModel.findByIdAndUpdate(_id, videoComment, {
       new: true,
-    }).populate("user,video");
+    }).populate("user video");
   }
 }

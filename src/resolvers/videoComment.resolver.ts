@@ -32,7 +32,7 @@ export class VideoCommentResolver {
   }
 
   @Query(() => VideoComment)
-  async video(@Arg("_id") _id: string): Promise<VideoComment> {
+  async videoComment(@Arg("_id") _id: string): Promise<VideoComment> {
     return this.videoCommentService.getVideoComment(_id);
   }
 
@@ -54,8 +54,11 @@ export class VideoCommentResolver {
     @Ctx() { user }: Context,
     @Arg("_id") _id: string
   ): Promise<VideoComment> {
-    const videoCommentToDelete = VideoCommentModel.findById(_id);
-    if (videoCommentToDelete.user._id !== user._id) {
+    const videoCommentToDelete = await this.videoCommentService.getVideoComment(
+      _id
+    );
+    console.log(videoCommentToDelete);
+    if (!videoCommentToDelete.user._id.equals(user._id)) {
       console.log("Nope.");
       return;
     }

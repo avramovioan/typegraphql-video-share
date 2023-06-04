@@ -16,6 +16,10 @@ export class Video extends BaseModel {
   @Prop()
   description: string;
 
+  @Field()
+  @Prop({ required: true })
+  videoLink: string;
+
   @Field(() => User)
   @Prop({ ref: User, required: true })
   user: Ref<User, Types.ObjectId>;
@@ -36,6 +40,11 @@ export class VideoInput {
   @MinLength(3)
   @MaxLength(500)
   description: string;
+
+  @Field()
+  @MinLength(3)
+  @MaxLength(500)
+  videoLink: string;
 }
 
 @ObjectType()

@@ -49,8 +49,9 @@ export class VideoResolver {
     @Ctx() { user }: Context,
     @Arg("_id") _id: string
   ): Promise<Video> {
-    const videoToDelete = VideoModel.findById(_id);
-    if (videoToDelete.user._id !== user._id) {
+    const videoToDelete = await this.videoService.getVideo(_id);
+    console.log(videoToDelete);
+    if (!videoToDelete.user._id.equals(user._id)) {
       console.log("Nope.");
       return;
     }
